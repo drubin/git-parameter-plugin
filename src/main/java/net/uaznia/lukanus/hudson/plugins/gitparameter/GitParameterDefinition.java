@@ -36,6 +36,8 @@ import hudson.plugins.git.GitSCM;
 import hudson.plugins.git.IGitAPI;
 import hudson.plugins.git.GitAPI;
 import hudson.plugins.git.Revision;
+import hudson.plugins.git.Branch;
+
 
 
 public class GitParameterDefinition extends ParameterDefinition  {
@@ -44,6 +46,8 @@ public class GitParameterDefinition extends ParameterDefinition  {
 	public static final String PARAMETER_TYPE_TAG = "PT_TAG";
 
 	public static final String PARAMETER_TYPE_REVISION = "PT_REVISION";
+	
+		public static final String PARAMETER_TYPE_BRANCH = "PT_BRANCH";
 
 	@Extension
 	public static class DescriptorImpl extends ParameterDescriptor {
@@ -61,6 +65,8 @@ public class GitParameterDefinition extends ParameterDefinition  {
         
         private Map<String, String> revisionMap;
         private Map<String, String> tagMap;
+        private Map<String, String> branchMap;
+        
 
 	@DataBoundConstructor
 	public GitParameterDefinition(String name,
@@ -200,7 +206,14 @@ public class GitParameterDefinition extends ParameterDefinition  {
                             for(String tagName: newgit.getTagNames("*")) {
                                 tagMap.put(tagName, tagName);
                             }
-                        }                                
+                        }     else if(type.equalsIgnoreCase(PARAMETER_TYPE_BRANCH)) {         
+                                branchMap = new HashMap<String, String>();
+
+                                //Set<String> tagNameList = newgit.getTagNames("*");
+                                for(Branch branch: newgit.getBranches()) {
+                                    branchMap.put(branch.getSHA1String(), branch.toString());
+                                }
+                            }                               
                             
                         }
                     }
@@ -225,6 +238,13 @@ public class GitParameterDefinition extends ParameterDefinition  {
             }
             return tagMap;
         }
+        
+         public Map<String, String> getBranchMap() {
+                if( branchMap == null || branchMap.isEmpty()){
+                    generateContents(PARAMETER_TYPE_BRANCH);
+                }
+                return branchMap;
+            }
         
 
 }

@@ -22,7 +22,15 @@
     	   <j:otherwise>
                <option value="PT_REVISION">Revision</option>
            </j:otherwise>    
-    	</j:choose>   
+    	</j:choose> 
+  		<j:choose>
+    	   <j:when test="${instance.type eq 'PT_BRANCH'}">       
+    	       <option value="PT_BRANCH" selected="selected">Branch</option>
+    	   </j:when>
+    	   <j:otherwise>
+               <option value="PT_BRANCH">Branch</option>
+           </j:otherwise>    
+    	</j:choose>
     </select>
   </f:entry>
 
